@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste articles{% endblock %}
+
+{% block body %}
+{%include 'header.html.twig'%}
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <br>
+                        {% if (is_granted('ROLE_USER') == false)%}
+                            <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter</a>
+                            <a href="{{ path('app_register') }}" class="btn btn-primary">S'inscrire</a>
+                        {% endif %}
+                        
+                        {%if (is_granted('ROLE_USER'))%}
+                            <a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
+                        {% endif %}
+                        <br><br>
+                        {% if is_granted('ROLE_USER')%}
+                        <a href="{{ path('app_article_creer') }}" class="btn btn-primary">Créer un article</a>
+                        {% endif %}
+                        <br>
+                        <br>
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+
+
+
+                        <div class="row">
+                            {% for article in articles %}
+                                <div class="col-md-4 mb-4"> 
+                                    <div class="card">
+                                        <h3>{{ article.titre }}</h3>
+                                        {% if article.image %}
+                                            <img src="{{ asset('uploads/brochures/' ~ article.image) }}" />
+                                        {% endif %}
+                                        <p>Id : {{ article.id }}</p>
+                                        {% if is_granted('ROLE_USER')%}
+                                            <a href="{{ path('app_article_update', {id: article.id}) }}" class="btn btn-primary">Modifier</a>
+                                            <br>
+                                            <a href="{{ path('app_article_delete', {id: article.id}) }}" class="btn btn-danger">Supprimer</a>
+                                        {% endif %}
+                                        <br>
+                                        <p>{{ article.texte }}</p>
+                                        <p><small>Publié le : {{ article.date|date('Y-m-d') }}</small></p>
+                                        <a href="{{ path('app_article_show', {id: article.id}) }}" class="btn btn-primary">Afficher</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        </div>
+                        <div style="height: 100vh"></div>
+                        <div class="card mb-4"><div class="card-body">When scrolling, the navigation stays at the top of the page. This is the end of the static navigation demo.</div></div>
+                    </div>
+                </main>
+                {%include 'footer.html.twig'%}
+            </div>
+        </div>
+{% endblock %}
